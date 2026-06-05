@@ -1,13 +1,15 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 export default function MenuPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const [nextPageTarget, setNextPageTarget] = useState<number | null>(null)
   const [flipDirection, setFlipDirection] = useState<'next' | 'prev'>('next')
   const [isFlipping, setIsFlipping] = useState(false)
+  const touchStartX = useRef(0)
+  const touchStartTime = useRef(0)
   const totalPages = 14
   const currentImageUrl = `/incog_page-${String(currentPage).padStart(2, '0')}.png`
   const incomingImageUrl = nextPageTarget
@@ -36,6 +38,52 @@ export default function MenuPage() {
     if (currentPage > 1) triggerFlip(currentPage - 1, 'prev')
   }
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX
+    touchStartTime.current = Date.now()
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const touchEndX = e.changedTouches[0].clientX
+    const touchDuration = Date.now() - touchStartTime.current
+    const swipeDistance = touchStartX.current - touchEndX
+    const minSwipeDistance = 50
+    const maxSwipeDuration = 1000
+
+    if (Math.abs(swipeDistance) > minSwipeDistance && touchDuration < maxSwipeDuration) {
+      if (swipeDistance > 0) {
+        // Swiped left - next page
+        nextPage()
+      } else {
+        // Swiped right - previous page
+        prevPage()
+      }
+    }
+  }
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    touchStartX.current = e.clientX
+    touchStartTime.current = Date.now()
+  }
+
+  const handleMouseUp = (e: React.MouseEvent) => {
+    const touchEndX = e.clientX
+    const touchDuration = Date.now() - touchStartTime.current
+    const swipeDistance = touchStartX.current - touchEndX
+    const minSwipeDistance = 50
+    const maxSwipeDuration = 1000
+
+    if (Math.abs(swipeDistance) > minSwipeDistance && touchDuration < maxSwipeDuration) {
+      if (swipeDistance > 0) {
+        // Swiped left - next page
+        nextPage()
+      } else {
+        // Swiped right - previous page
+        prevPage()
+      }
+    }
+  }
+
   return (
     <>
       <style>{`
@@ -49,9 +97,12 @@ export default function MenuPage() {
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          gap: 24px;
-          padding: 84px 16px 24px;
+          gap: 16px;
+          padding: 80px 12px 20px;
           overflow-y: auto;
+          -webkit-user-select: none;
+          user-select: none;
+          -webkit-touch-callout: none;
         }
 
         .page-shell::before {
@@ -89,17 +140,19 @@ export default function MenuPage() {
         .flipbook-container {
           display: flex;
           flex-direction: column;
-          gap: 16px;
+          gap: 12px;
           align-items: center;
           width: 100%;
-          max-width: 920px;
+          max-width: 100%;
+          padding: 0 8px;
         }
 
         .flipbook-viewer {
           position: relative;
           width: 100%;
-          max-width: 860px;
-          height: min(70vh, 700px);
+          height: auto;
+          aspect-ratio: 9 / 14;
+          max-height: 90vh;
           background: rgba(0, 0, 0, 0.2);
           border: 2px solid rgba(245, 240, 232, 0.3);
           display: flex;
@@ -108,6 +161,12 @@ export default function MenuPage() {
           overflow: hidden;
           box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
           perspective: 1200px;
+          cursor: grab;
+          user-select: none;
+        }
+
+        .flipbook-viewer:active {
+          cursor: grabbing;
         }
 
         .flipbook-page-stack {
@@ -173,35 +232,15 @@ export default function MenuPage() {
         }
 
         .flipbook-controls {
-          display: flex;
-          gap: 12px;
-          align-items: center;
-          justify-content: center;
-          flex-wrap: wrap;
+          display: none;
         }
 
-        .flip-btn {
-          background: rgba(245, 240, 232, 0.2);
-          border: 1px solid rgba(245, 240, 232, 0.5);
-          color: rgba(245, 240, 232, 0.8);
-          padding: 10px 20px;
+        .swipe-hint {
           font-family: 'Space Mono', monospace;
           font-size: 12px;
-          letter-spacing: 0.1em;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          text-transform: uppercase;
-        }
-
-        .flip-btn:hover:not(:disabled) {
-          background: rgba(245, 240, 232, 0.3);
-          border-color: rgba(245, 240, 232, 1);
-          color: rgba(245, 240, 232, 1);
-        }
-
-        .flip-btn:disabled {
-          opacity: 0.35;
-          cursor: not-allowed;
+          color: rgba(245, 240, 232, 0.5);
+          text-align: center;
+          letter-spacing: 0.05em;
         }
 
         .page-counter {
@@ -215,26 +254,35 @@ export default function MenuPage() {
         @media (max-width: 768px) {
           .page-shell {
             justify-content: flex-start;
-            gap: 14px;
-            padding: 76px 12px 16px;
+            gap: 12px;
+            padding: 70px 8px 14px;
           }
 
           .back-btn {
-            top: 18px;
-            left: 16px;
+            top: 16px;
+            left: 14px;
             font-size: 12px;
           }
 
           .flipbook-viewer {
-            height: 56vh;
-            min-height: 340px;
+            max-height: 80vh;
+          }
+
+          .flipbook-container {
+            padding: 0 4px;
           }
         }
       `}</style>
       <div className="page-shell">
         <Link href="/" className="back-btn">← BACK</Link>
         <div className="flipbook-container">
-          <div className={`flipbook-viewer${isFlipping ? ` flipping-${flipDirection}` : ''}`}>
+          <div 
+            className={`flipbook-viewer${isFlipping ? ` flipping-${flipDirection}` : ''}`}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
+          >
             <div className="flipbook-page-stack">
               <img
                 src={currentImageUrl}
@@ -253,15 +301,8 @@ export default function MenuPage() {
               )}
             </div>
           </div>
-          <div className="flipbook-controls">
-            <button className="flip-btn" onClick={prevPage} disabled={currentPage === 1 || isFlipping}>
-              ← PREVIOUS
-            </button>
-            <div className="page-counter">Page {currentPage} / {totalPages}</div>
-            <button className="flip-btn" onClick={nextPage} disabled={currentPage >= totalPages || isFlipping}>
-              NEXT →
-            </button>
-          </div>
+          <div className="page-counter">Page {currentPage} / {totalPages}</div>
+          <div className="swipe-hint">← SWIPE TO TURN PAGES →</div>
         </div>
       </div>
     </>
