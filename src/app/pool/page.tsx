@@ -428,7 +428,8 @@ export default function PoolPage() {
         @media (max-width: 768px) {
           .pool-shell {
             justify-content: flex-start;
-            padding: 62px 10px 18px;
+            padding: 58px 8px 14px;
+            gap: 8px;
           }
 
           .pool-back {
@@ -438,20 +439,30 @@ export default function PoolPage() {
           }
 
           .pool-table-wrap {
-            width: 96vw;
+            width: min(96vw, calc((100dvh - 150px) * 1.785714));
           }
 
           .pool-table {
-            border-width: 12px;
-            border-radius: 22px;
+            border-width: 10px;
+            border-radius: 18px;
+            max-height: calc(100dvh - 150px);
           }
 
           .pool-logo {
-            width: 120px;
+            width: 104px;
           }
 
           .pool-status {
             font-size: 11px;
+          }
+
+          .pool-controls {
+            gap: 8px;
+          }
+
+          .pool-reset {
+            padding: 8px 11px;
+            font-size: 10px;
           }
         }
       `}</style>
