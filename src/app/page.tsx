@@ -113,9 +113,6 @@ export default function Home() {
                   className="option-image"
                 />
               </Link>
-              <Link href="/drop" className="option-portal">
-                <span className="option-label">THE DROP</span>
-              </Link>
             </nav>
           </div>
         )}
