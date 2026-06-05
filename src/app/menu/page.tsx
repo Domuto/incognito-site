@@ -97,8 +97,8 @@ export default function MenuPage() {
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          gap: 16px;
-          padding: 80px 12px 20px;
+          gap: 14px;
+          padding: 80px 0 20px;
           overflow-y: auto;
           -webkit-user-select: none;
           user-select: none;
@@ -144,22 +144,22 @@ export default function MenuPage() {
           align-items: center;
           width: 100%;
           max-width: 100%;
-          padding: 0 8px;
+          padding: 0;
         }
 
         .flipbook-viewer {
           position: relative;
           width: 100%;
           height: auto;
-          aspect-ratio: 9 / 14;
+          aspect-ratio: 8 / 11;
           max-height: 90vh;
           background: rgba(0, 0, 0, 0.2);
-          border: 2px solid rgba(245, 240, 232, 0.3);
+          border: none;
           display: flex;
           align-items: center;
           justify-content: center;
           overflow: hidden;
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+          box-shadow: none;
           perspective: 1200px;
           cursor: grab;
           user-select: none;
@@ -251,11 +251,37 @@ export default function MenuPage() {
           text-align: center;
         }
 
+        .pdf-btn {
+          font-family: 'Space Mono', monospace;
+          font-size: 11px;
+          letter-spacing: 0.08em;
+          color: rgba(245, 240, 232, 0.7);
+          background: rgba(245, 240, 232, 0.1);
+          border: 1px solid rgba(245, 240, 232, 0.4);
+          padding: 8px 16px;
+          text-decoration: none;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          text-transform: uppercase;
+          border-radius: 2px;
+          display: inline-block;
+        }
+
+        .pdf-btn:hover {
+          background: rgba(245, 240, 232, 0.15);
+          border-color: rgba(245, 240, 232, 0.7);
+          color: rgba(245, 240, 232, 1);
+        }
+
+        .pdf-btn:active {
+          transform: scale(0.98);
+        }
+
         @media (max-width: 768px) {
           .page-shell {
             justify-content: flex-start;
             gap: 12px;
-            padding: 70px 8px 14px;
+            padding: 70px 0 14px;
           }
 
           .back-btn {
@@ -265,11 +291,7 @@ export default function MenuPage() {
           }
 
           .flipbook-viewer {
-            max-height: 80vh;
-          }
-
-          .flipbook-container {
-            padding: 0 4px;
+            max-height: 85vh;
           }
         }
       `}</style>
@@ -303,6 +325,9 @@ export default function MenuPage() {
           </div>
           <div className="page-counter">Page {currentPage} / {totalPages}</div>
           <div className="swipe-hint">← SWIPE TO TURN PAGES →</div>
+          <a href="/INCOG MENU WEB.pdf" target="_blank" rel="noopener noreferrer" className="pdf-btn">
+            📄 VIEW PDF
+          </a>
         </div>
       </div>
     </>
