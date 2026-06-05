@@ -1,0 +1,396 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --red: #1a1a1a;
+  --black: #0a0a0a;
+  --white: #f5f0e8;
+  --teal: #2d6b62;
+  --gold: #c9a84c;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--black);
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Main Entrance Container ────────────────── */
+.incognito-entrance {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: var(--black);
+  overflow: hidden;
+}
+
+/* ── Entry Phase (Black screen + Warning) ──── */
+.entry-phase {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+  pointer-events: none;
+}
+
+.entry-phase-2,
+.entry-phase-3 {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.warning-text {
+  font-family: var(--font-mono);
+  font-size: clamp(14px, 2.5vw, 24px);
+  letter-spacing: 0.1em;
+  color: var(--white);
+  opacity: 0;
+  animation: fade-in-warning 2s ease-out 0.3s forwards;
+  text-align: center;
+  padding: 20px;
+  max-width: 80%;
+}
+
+@keyframes fade-in-warning {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 0.8;
+    transform: translateY(0);
+  }
+}
+
+/* ── Logo Reveal Phase ──────────────────────── */
+.logo-reveal {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  background: var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 1s ease, visibility 1s ease;
+  pointer-events: none;
+}
+
+.logo-reveal.settled {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.logo-image {
+  width: auto;
+  max-width: 80%;
+  height: auto;
+  opacity: 0;
+  animation: logo-appear 3s ease-out 0.5s forwards;
+}
+
+@keyframes logo-appear {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+    stroke-width: 1;
+  }
+  50% {
+    opacity: 1;
+    stroke-width: 0.5;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    stroke-width: 0.3;
+  }
+}
+
+/* ── Full Entrance (Textured Background) ──── */
+.entrance-full {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  visibility: visible;
+  animation: entrance-fade-in 0.8s ease-out 0.2s forwards;
+}
+
+@keyframes entrance-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── Textured Background ────────────────────── */
+.textured-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  animation: subtle-shift 120s ease-in-out infinite;
+  background-attachment: fixed;
+}
+
+@keyframes subtle-shift {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(2px, 1px); }
+}
+
+/* Texture 0: Old beer-stained wood paneling */
+.textured-bg.texture-0 {
+  background: 
+    linear-gradient(90deg, transparent 24%, rgba(255,255,255,.05) 25%, rgba(255,255,255,.05) 26%, transparent 27%, transparent 74%, rgba(255,255,255,.05) 75%, rgba(255,255,255,.05) 76%, transparent 77%, transparent),
+    linear-gradient(0deg, transparent 24%, rgba(255,255,255,.05) 25%, rgba(255,255,255,.05) 26%, transparent 27%, transparent 74%, rgba(255,255,255,.05) 75%, rgba(255,255,255,.05) 76%, transparent 77%, transparent);
+  background-color: #3d2817;
+  background-size: 50px 50px;
+}
+
+.textured-bg.texture-0::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 50%, rgba(139,69,19,0.1), transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(0,0,0,0.2), transparent 60%),
+              radial-gradient(ellipse at 30% 30%, rgba(160,82,45,0.15), transparent 40%);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+/* Texture 1: Black painted brick */
+.textured-bg.texture-1 {
+  background: 
+    linear-gradient(0deg, transparent 24%, rgba(255,255,255,.08) 25%, rgba(255,255,255,.08) 26%, transparent 27%, transparent 74%, rgba(255,255,255,.08) 75%, rgba(255,255,255,.08) 76%, transparent 77%, transparent),
+    linear-gradient(90deg, transparent 24%, rgba(255,255,255,.08) 25%, rgba(255,255,255,.08) 26%, transparent 27%, transparent 74%, rgba(255,255,255,.08) 75%, rgba(255,255,255,.08) 76%, transparent 77%, transparent),
+    linear-gradient(45deg, transparent 48%, rgba(255,255,255,.05) 49%, rgba(255,255,255,.05) 50%, transparent 51%, transparent);
+  background-color: #1a1a1a;
+  background-size: 60px 30px, 60px 30px, 100px 100px;
+}
+
+.textured-bg.texture-1::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 15% 40%, rgba(255,255,255,0.03), transparent 30%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+/* Texture 2: Torn concert posters */
+.textured-bg.texture-2 {
+  background: 
+    linear-gradient(0deg, #2a1a3a 0%, #1a0f2e 30%, #2a1a3a 60%, #1a0f2e 100%),
+    repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.02) 35px, rgba(255,255,255,.02) 70px),
+    radial-gradient(circle at 20% 50%, rgba(200,50,50,0.1), transparent 50%);
+  background-color: #1a0f2e;
+}
+
+.textured-bg.texture-2::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 30%, rgba(255,200,100,0.05), transparent 50%),
+              radial-gradient(ellipse at 70% 70%, rgba(200,100,200,0.05), transparent 50%);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+/* Texture 3: Faded Atlanta utility box texture */
+.textured-bg.texture-3 {
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(100,100,100,0.1) 2px, rgba(100,100,100,0.1) 4px),
+    repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(100,100,100,0.1) 2px, rgba(100,100,100,0.1) 4px),
+    linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 50%, #2a2a2a 100%);
+  background-color: #1f1f1f;
+  background-size: auto, auto, 100% 100%;
+}
+
+.textured-bg.texture-3::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 25% 25%, rgba(255,255,255,0.05), transparent 40%),
+              linear-gradient(to right, rgba(0,0,0,0.1), transparent);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+/* Texture 4: Cracked stucco */
+.textured-bg.texture-4 {
+  background:
+    radial-gradient(ellipse 400px 300px at 20% 50%, transparent 20%, rgba(0,0,0,0.05) 50%),
+    radial-gradient(ellipse 400px 300px at 60% 0%, transparent 10%, rgba(0,0,0,0.1) 50%),
+    radial-gradient(ellipse 300px 300px at 80% 50%, transparent 20%, rgba(0,0,0,0.05) 50%);
+  background-color: #2a2a28;
+}
+
+.textured-bg.texture-4::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10,50 Q30,40 50,50 T90,50' stroke='rgba(0,0,0,0.1)' stroke-width='0.5' fill='none'/%3E%3Cpath d='M20,30 Q40,20 60,30 T100,30' stroke='rgba(0,0,0,0.08)' stroke-width='0.5' fill='none'/%3E%3C/svg%3E");
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Texture 5: Vintage sports-bar carpet pattern */
+.textured-bg.texture-5 {
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(255,200,0,0.03) 20px, rgba(255,200,0,0.03) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(255,200,0,0.03) 20px, rgba(255,200,0,0.03) 40px),
+    linear-gradient(45deg, #2a1f0f 0%, #3a2f1f 50%, #2a1f0f 100%);
+  background-color: #2a1f0f;
+  background-size: auto, auto, 100% 100%;
+}
+
+.textured-bg.texture-5::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 30%, rgba(255,200,0,0.08), transparent 50%),
+              radial-gradient(circle at 70% 70%, rgba(200,100,0,0.1), transparent 60%);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+/* Texture 6: Cigarette-burned laminate countertop */
+.textured-bg.texture-6 {
+  background:
+    radial-gradient(circle 2px at 10% 20%, rgba(0,0,0,0.3), rgba(0,0,0,0.1) 2px),
+    radial-gradient(circle 1.5px at 30% 60%, rgba(0,0,0,0.25), rgba(0,0,0,0.1) 1.5px),
+    radial-gradient(circle 1px at 70% 40%, rgba(0,0,0,0.2), rgba(0,0,0,0.05) 1px),
+    linear-gradient(135deg, #3a3a38 0%, #2a2a28 50%, #3a3a38 100%);
+  background-color: #2a2a28;
+  background-size: auto, auto, auto, 100% 100%;
+}
+
+.textured-bg.texture-6::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.1), transparent 50%, rgba(0,0,0,0.1));
+  pointer-events: none;
+}
+
+/* Texture 7: Weathered plywood */
+.textured-bg.texture-7 {
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0,0,0,0.1) 1px, rgba(0,0,0,0.1) 2px),
+    repeating-linear-gradient(90deg, transparent, transparent 80px, rgba(0,0,0,0.05) 80px, rgba(0,0,0,0.05) 160px),
+    linear-gradient(90deg, #4a4a42 0%, #3a3a32 50%, #4a4a42 100%);
+  background-color: #3a3a32;
+  background-size: auto, auto, 100% 100%;
+}
+
+.textured-bg.texture-7::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.05), transparent 60%),
+              radial-gradient(ellipse at 80% 50%, rgba(0,0,0,0.1), transparent 60%);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+/* ── Floating Options ───────────────────────── */
+.floating-options {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  align-items: center;
+  justify-content: center;
+}
+
+.option-portal {
+  position: relative;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.option-label {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 5vw, 64px);
+  letter-spacing: 0.08em;
+  color: var(--white);
+  text-transform: uppercase;
+  display: block;
+  opacity: 0.6;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  padding: 20px 40px;
+  border: 1px solid rgba(245, 240, 232, 0);
+}
+
+/* Hover effect - slight glow and movement */
+.option-portal:hover .option-label {
+  opacity: 1;
+  color: var(--white);
+  text-shadow: 0 0 20px rgba(245, 240, 232, 0.4);
+  transform: translateY(-4px);
+  border: 1px solid rgba(245, 240, 232, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 0 12px rgba(245, 240, 232, 0.1);
+}
+
+/* Active state */
+.option-portal:active .option-label {
+  transform: translateY(2px);
+}
+
+/* ── Grain Overlay ──────────────────────────── */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0.08;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* ── Corner Tag ─────────────────────────────── */
+.corner-tag {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: rgba(245, 240, 232, 0.3);
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 0.6s ease 1.4s;
+  z-index: 10;
+}
+
+.main-site.visible ~ .corner-tag,
+.corner-tag.show {
+  opacity: 1;
+}
