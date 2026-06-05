@@ -19,6 +19,7 @@ export default function Home() {
     // Start with black screen and ambient hum
     const audioElement = audioRef.current
     if (audioElement) {
+      audioElement.volume = 0.3
       audioElement.play().catch(() => {
         // Autoplay blocked, continue anyway
       })
@@ -54,7 +55,7 @@ export default function Home() {
     <>
       <div className="incognito-entrance" onMouseMove={handleMouseMove}>
         {/* Ambient hum audio */}
-        <audio ref={audioRef} loop volume={0.3}>
+        <audio ref={audioRef} loop>
           <source src="/ambient-hum.mp3" type="audio/mpeg" />
         </audio>
 
