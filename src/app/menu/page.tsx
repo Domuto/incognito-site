@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 
 export default function MenuPage() {
   const [currentPage, setCurrentPage] = useState(1)
@@ -98,7 +98,7 @@ export default function MenuPage() {
           align-items: center;
           justify-content: center;
           gap: 14px;
-          padding: 80px 0 20px;
+          padding: 64px 10px 14px;
           overflow-y: auto;
           -webkit-user-select: none;
           user-select: none;
@@ -143,16 +143,15 @@ export default function MenuPage() {
           gap: 12px;
           align-items: center;
           width: 100%;
-          max-width: 100%;
-          padding: 0;
+          max-width: 920px;
+          padding: 0 8px;
         }
 
         .flipbook-viewer {
           position: relative;
           width: 100%;
-          height: auto;
-          aspect-ratio: 8 / 11;
-          max-height: 90vh;
+          max-width: 860px;
+          height: min(70vh, 700px);
           background: rgba(0, 0, 0, 0.2);
           border: none;
           display: flex;
@@ -163,6 +162,7 @@ export default function MenuPage() {
           perspective: 1200px;
           cursor: grab;
           user-select: none;
+          touch-action: pan-y;
         }
 
         .flipbook-viewer:active {
@@ -180,7 +180,7 @@ export default function MenuPage() {
           inset: 0;
           width: 100%;
           height: 100%;
-          object-fit: cover;
+          object-fit: contain;
           object-position: center;
           backface-visibility: hidden;
           transform-origin: center;
@@ -278,28 +278,10 @@ export default function MenuPage() {
         }
 
         @media (max-width: 768px) {
-          .page-counter {
-            display: none;
-          }
-
-          .swipe-hint {
-            display: none;
-          }
-
-          .pdf-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            font-size: 10px;
-            padding: 6px 12px;
-          }
-        }
-
-        @media (max-width: 768px) {
           .page-shell {
             justify-content: flex-start;
             gap: 12px;
-            padding: 70px 0 14px;
+            padding: 58px 6px 8px;
           }
 
           .back-btn {
@@ -309,7 +291,9 @@ export default function MenuPage() {
           }
 
           .flipbook-viewer {
-            max-height: 85vh;
+            width: 100%;
+            max-width: calc(100vw - 12px);
+            height: min(75vh, 560px);
           }
 
           .page-counter {
