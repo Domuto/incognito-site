@@ -335,32 +335,21 @@ body {
   transition: all 0.3s ease;
 }
 
-.option-label {
-  font-family: var(--font-display);
-  font-size: clamp(24px, 5vw, 64px);
-  letter-spacing: 0.08em;
-  color: var(--white);
-  text-transform: uppercase;
-  display: block;
-  opacity: 0.6;
+.option-image {
+  width: auto;
+  height: auto;
+  max-width: 250px;
+  opacity: 0.7;
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  position: relative;
-  padding: 20px 40px;
-  border: 1px solid rgba(245, 240, 232, 0);
 }
 
-/* Hover effect - slight glow and movement */
-.option-portal:hover .option-label {
+.option-portal:hover .option-image {
   opacity: 1;
-  color: var(--white);
-  text-shadow: 0 0 20px rgba(245, 240, 232, 0.4);
   transform: translateY(-4px);
-  border: 1px solid rgba(245, 240, 232, 0.3);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 0 12px rgba(245, 240, 232, 0.1);
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.4));
 }
 
-/* Active state */
-.option-portal:active .option-label {
+.option-portal:active .option-image {
   transform: translateY(2px);
 }
 

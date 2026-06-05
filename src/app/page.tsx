@@ -96,10 +96,22 @@ export default function Home() {
             {/* Three floating options */}
             <nav className="floating-options">
               <Link href="/menu" className="option-portal">
-                <span className="option-label">THE FILES</span>
+                <Image
+                  src="/menubutton.PNG"
+                  alt="THE FILES"
+                  width={200}
+                  height={200}
+                  className="option-image"
+                />
               </Link>
               <Link href="/about" className="option-portal">
-                <span className="option-label">THE ALIBI</span>
+                <Image
+                  src="/aboutbuton.PNG"
+                  alt="THE ALIBI"
+                  width={200}
+                  height={200}
+                  className="option-image"
+                />
               </Link>
               <Link href="/drop" className="option-portal">
                 <span className="option-label">THE DROP</span>
