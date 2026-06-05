@@ -26,7 +26,7 @@ export default function AboutPage() {
         .page-shell {
           position: fixed;
           inset: 0;
-          background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 50%, #1a1a1a 100%);
+          background: url('/ABOUTPAGE.jpeg') center/cover no-repeat;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -37,11 +37,13 @@ export default function AboutPage() {
           content: '';
           position: absolute;
           inset: 0;
-          background-image: 
-            url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='6' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.15'/%3E%3C/svg%3E");
-          background-size: 200px 200px;
-          opacity: 0.8;
+          background: rgba(0, 0, 0, 0.2);
           pointer-events: none;
+        }
+        @media (max-width: 768px) {
+          .page-shell {
+            background: url('/mobileabout.jpeg') center/cover no-repeat;
+          }
         }
         .page-shell > * {
           position: relative;
