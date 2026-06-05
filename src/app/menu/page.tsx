@@ -278,6 +278,24 @@ export default function MenuPage() {
         }
 
         @media (max-width: 768px) {
+          .page-counter {
+            display: none;
+          }
+
+          .swipe-hint {
+            display: none;
+          }
+
+          .pdf-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 10px;
+            padding: 6px 12px;
+          }
+        }
+
+        @media (max-width: 768px) {
           .page-shell {
             justify-content: flex-start;
             gap: 12px;
@@ -292,6 +310,22 @@ export default function MenuPage() {
 
           .flipbook-viewer {
             max-height: 85vh;
+          }
+
+          .page-counter {
+            display: none;
+          }
+
+          .swipe-hint {
+            display: none;
+          }
+
+          .pdf-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 10px;
+            padding: 6px 12px;
           }
         }
       `}</style>
