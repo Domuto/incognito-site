@@ -1,32 +1,17 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 export default function MenuPage() {
-  const [secretButtonShown, setSecretButtonShown] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
-
-  useEffect(() => {
-    // Randomly show/hide the secret button with glitchy animations
-    const showButton = () => {
-      setSecretButtonShown(Math.random() > 0.4)
-    }
-    
-    const interval = setInterval(showButton, 2000)
-    return () => clearInterval(interval)
-  }, [])
-
-  const handleSecretClick = () => {
-    alert('🤫')
-  }
 
   const nextPage = () => setCurrentPage(p => p + 1)
   const prevPage = () => setCurrentPage(p => Math.max(1, p - 1))
   return (
     <>
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap');
         .page-shell {
           position: fixed;
           inset: 0;
@@ -36,7 +21,8 @@ export default function MenuPage() {
           align-items: center;
           justify-content: center;
           gap: 40px;
-          font-family: 'Bebas Neue', sans-serif;
+          padding: 80px 20px 20px;
+          overflow-y: auto;
         }
         .page-shell::before {
           content: '';
@@ -47,14 +33,14 @@ export default function MenuPage() {
           background-size: 200px 200px;
           opacity: 0.8;
           pointer-events: none;
+          z-index: 0;
         }
         .page-shell > * {
           position: relative;
           z-index: 1;
         }
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
         .back-btn {
-          font-family: inherit;
+          font-family: 'Bebas Neue', sans-serif;
           font-size: 14px;
           letter-spacing: 0.2em;
           color: rgba(245,240,232,0.5);
@@ -63,33 +49,15 @@ export default function MenuPage() {
           top: 28px;
           left: 28px;
           transition: color 0.2s;
+          z-index: 100;
         }
         .back-btn:hover { color: rgba(245,240,232,1); }
-        .secret-btn {
-          position: fixed;
-          top: 28px;
-          right: 28px;
-          z-index: 110;
-          background: transparent;
-          border: 1px solid rgba(245,240,232,0.6);
-          padding: 8px 12px;
-          cursor: pointer;
-          font-family: 'Space Mono', monospace;
-          font-size: 10px;
-          letter-spacing: 0.15em;
-          color: rgba(245,240,232,0.6);
-          text-transform: uppercase;
-          transition: all 0.1s ease;
-          opacity: 0;
-          visibility: hidden;
-          pointer-events: none;
-          animation: glitch-hide 0.3s ease-out;
-        }
-        .secret-btn.shown {
-          opacity: 1;
-          visibility: visible;
-          pointer-events: auto;
-          animation: glitch-show 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        .flipbook-container {
+          display: flex;
+          flex-direction: column;
+          gap: 30px;
+          align-items: center;
+          width: 100%;
         }
         @keyframes glitch-show {
           0% {
@@ -207,13 +175,6 @@ export default function MenuPage() {
       `}</style>
       <div className="page-shell">
         <Link href="/" className="back-btn">← BACK</Link>
-        <button
-          className={`secret-btn${secretButtonShown ? ' shown' : ''}`}
-          onClick={handleSecretClick}
-          aria-hidden={!secretButtonShown}
-        >
-          ••••••
-        </button>
         <div className="flipbook-container">
           <div className="flipbook-viewer">
             <iframe

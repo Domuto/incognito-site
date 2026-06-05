@@ -1,24 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
 
 export default function AboutPage() {
-  const [secretButtonShown, setSecretButtonShown] = useState(true)
-
-  useEffect(() => {
-    // Randomly show/hide the secret button with glitchy animations
-    const showButton = () => {
-      setSecretButtonShown(Math.random() > 0.4)
-    }
-    
-    const interval = setInterval(showButton, 2000)
-    return () => clearInterval(interval)
-  }, [])
-
-  const handleSecretClick = () => {
-    alert('🤫')
-  }
   return (
     <>
       <style>{`
@@ -146,13 +130,6 @@ export default function AboutPage() {
       `}</style>
       <div className="page-shell">
         <Link href="/" className="back-btn">← BACK</Link>
-        <button
-          className={`secret-btn${secretButtonShown ? ' shown' : ''}`}
-          onClick={handleSecretClick}
-          aria-hidden={!secretButtonShown}
-        >
-          ••••••
-        </button>
         <h1 className="page-title" style={{ display: 'none' }}>THE ALIBI</h1>
       </div>
     </>
