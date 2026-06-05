@@ -5,11 +5,36 @@ import { useState } from 'react'
 
 export default function MenuPage() {
   const [currentPage, setCurrentPage] = useState(1)
+  const [nextPageTarget, setNextPageTarget] = useState<number | null>(null)
+  const [flipDirection, setFlipDirection] = useState<'next' | 'prev'>('next')
+  const [isFlipping, setIsFlipping] = useState(false)
   const totalPages = 14
-  const menuImageUrl = `/incog_page-${String(currentPage).padStart(2, '0')}.png`
+  const currentImageUrl = `/incog_page-${String(currentPage).padStart(2, '0')}.png`
+  const incomingImageUrl = nextPageTarget
+    ? `/incog_page-${String(nextPageTarget).padStart(2, '0')}.png`
+    : ''
 
-  const nextPage = () => setCurrentPage(p => Math.min(totalPages, p + 1))
-  const prevPage = () => setCurrentPage(p => Math.max(1, p - 1))
+  const triggerFlip = (target: number, direction: 'next' | 'prev') => {
+    if (isFlipping || target === currentPage) return
+
+    setFlipDirection(direction)
+    setNextPageTarget(target)
+    setIsFlipping(true)
+
+    window.setTimeout(() => {
+      setCurrentPage(target)
+      setNextPageTarget(null)
+      setIsFlipping(false)
+    }, 420)
+  }
+
+  const nextPage = () => {
+    if (currentPage < totalPages) triggerFlip(currentPage + 1, 'next')
+  }
+
+  const prevPage = () => {
+    if (currentPage > 1) triggerFlip(currentPage - 1, 'prev')
+  }
 
   return (
     <>
@@ -75,20 +100,76 @@ export default function MenuPage() {
           width: 100%;
           max-width: 860px;
           height: min(70vh, 700px);
-          background: rgba(0, 0, 0, 0.5);
+          background: rgba(0, 0, 0, 0.2);
           border: 2px solid rgba(245, 240, 232, 0.3);
           display: flex;
           align-items: center;
           justify-content: center;
           overflow: hidden;
           box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+          perspective: 1200px;
+        }
+
+        .flipbook-page-stack {
+          position: relative;
+          width: 100%;
+          height: 100%;
         }
 
         .flipbook-image {
+          position: absolute;
+          inset: 0;
           width: 100%;
           height: 100%;
-          object-fit: contain;
-          background: #0f0f0f;
+          object-fit: cover;
+          object-position: center;
+          backface-visibility: hidden;
+          transform-origin: center;
+          will-change: transform, opacity;
+        }
+
+        .flipbook-image.current {
+          z-index: 2;
+        }
+
+        .flipbook-image.incoming {
+          z-index: 1;
+        }
+
+        .flipbook-viewer.flipping-next .flipbook-image.current {
+          animation: page-flip-out-next 0.42s ease-in-out forwards;
+        }
+
+        .flipbook-viewer.flipping-next .flipbook-image.incoming {
+          animation: page-flip-in-next 0.42s ease-in-out forwards;
+        }
+
+        .flipbook-viewer.flipping-prev .flipbook-image.current {
+          animation: page-flip-out-prev 0.42s ease-in-out forwards;
+        }
+
+        .flipbook-viewer.flipping-prev .flipbook-image.incoming {
+          animation: page-flip-in-prev 0.42s ease-in-out forwards;
+        }
+
+        @keyframes page-flip-out-next {
+          0% { transform: rotateY(0deg) scale(1); opacity: 1; }
+          100% { transform: rotateY(-75deg) scale(0.98); opacity: 0.05; }
+        }
+
+        @keyframes page-flip-in-next {
+          0% { transform: rotateY(75deg) scale(0.98); opacity: 0.05; }
+          100% { transform: rotateY(0deg) scale(1); opacity: 1; }
+        }
+
+        @keyframes page-flip-out-prev {
+          0% { transform: rotateY(0deg) scale(1); opacity: 1; }
+          100% { transform: rotateY(75deg) scale(0.98); opacity: 0.05; }
+        }
+
+        @keyframes page-flip-in-prev {
+          0% { transform: rotateY(-75deg) scale(0.98); opacity: 0.05; }
+          100% { transform: rotateY(0deg) scale(1); opacity: 1; }
         }
 
         .flipbook-controls {
@@ -153,20 +234,31 @@ export default function MenuPage() {
       <div className="page-shell">
         <Link href="/" className="back-btn">← BACK</Link>
         <div className="flipbook-container">
-          <div className="flipbook-viewer">
-            <img
-              src={menuImageUrl}
-              className="flipbook-image"
-              alt={`Incognito Menu Page ${currentPage}`}
-              draggable={false}
-            />
+          <div className={`flipbook-viewer${isFlipping ? ` flipping-${flipDirection}` : ''}`}>
+            <div className="flipbook-page-stack">
+              <img
+                src={currentImageUrl}
+                className="flipbook-image current"
+                alt={`Incognito Menu Page ${currentPage}`}
+                draggable={false}
+              />
+              {isFlipping && nextPageTarget && (
+                <img
+                  src={incomingImageUrl}
+                  className="flipbook-image incoming"
+                  alt=""
+                  aria-hidden="true"
+                  draggable={false}
+                />
+              )}
+            </div>
           </div>
           <div className="flipbook-controls">
-            <button className="flip-btn" onClick={prevPage} disabled={currentPage === 1}>
+            <button className="flip-btn" onClick={prevPage} disabled={currentPage === 1 || isFlipping}>
               ← PREVIOUS
             </button>
             <div className="page-counter">Page {currentPage} / {totalPages}</div>
-            <button className="flip-btn" onClick={nextPage} disabled={currentPage >= totalPages}>
+            <button className="flip-btn" onClick={nextPage} disabled={currentPage >= totalPages || isFlipping}>
               NEXT →
             </button>
           </div>
