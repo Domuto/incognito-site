@@ -142,23 +142,23 @@ export default function MenuPage() {
           flex-direction: column;
           gap: 12px;
           align-items: center;
-          width: 100%;
-          max-width: 920px;
+          width: min(96vw, 1050px);
+          max-width: 1050px;
           padding: 0 8px;
         }
 
         .flipbook-viewer {
           position: relative;
           width: 100%;
-          max-width: 860px;
-          height: min(70vh, 700px);
-          background: rgba(0, 0, 0, 0.2);
-          border: none;
+          aspect-ratio: 1 / 1;
+          max-width: 1050px;
+          max-height: calc(100dvh - 170px);
+          background: transparent;
+          border: 0;
           display: flex;
           align-items: center;
           justify-content: center;
           overflow: hidden;
-          box-shadow: none;
           perspective: 1200px;
           cursor: grab;
           user-select: none;
@@ -173,6 +173,7 @@ export default function MenuPage() {
           position: relative;
           width: 100%;
           height: 100%;
+          background: transparent;
         }
 
         .flipbook-image {
@@ -185,6 +186,11 @@ export default function MenuPage() {
           backface-visibility: hidden;
           transform-origin: center;
           will-change: transform, opacity;
+        }
+
+        .flipbook-image.current,
+        .flipbook-image.incoming {
+          background: transparent;
         }
 
         .flipbook-image.current {
@@ -236,6 +242,16 @@ export default function MenuPage() {
         }
 
         .swipe-hint {
+          display: none;
+          font-family: 'Space Mono', monospace;
+          font-size: 12px;
+          color: rgba(245, 240, 232, 0.5);
+          text-align: center;
+          letter-spacing: 0.05em;
+        }
+
+        .mobile-swipe-hint {
+          display: none;
           font-family: 'Space Mono', monospace;
           font-size: 12px;
           color: rgba(245, 240, 232, 0.5);
@@ -293,7 +309,7 @@ export default function MenuPage() {
           .flipbook-viewer {
             width: 100%;
             max-width: calc(100vw - 12px);
-            height: min(75vh, 560px);
+            max-height: calc(100dvh - 150px);
           }
 
           .page-counter {
@@ -302,6 +318,13 @@ export default function MenuPage() {
 
           .swipe-hint {
             display: none;
+          }
+
+          .mobile-swipe-hint {
+            display: block;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            opacity: 0.9;
           }
 
           .pdf-btn {
@@ -343,8 +366,9 @@ export default function MenuPage() {
           </div>
           <div className="page-counter">Page {currentPage} / {totalPages}</div>
           <div className="swipe-hint">← SWIPE TO TURN PAGES →</div>
+          <div className="mobile-swipe-hint">Swipe left or right to turn pages</div>
           <a href="/INCOG MENU WEB.pdf" target="_blank" rel="noopener noreferrer" className="pdf-btn">
-            📄 VIEW PDF
+            📄 VIEW MENU PDF
           </a>
         </div>
       </div>
