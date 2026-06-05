@@ -1,8 +1,12 @@
 'use client'
 
 import Link from 'next/link'
+import { useState } from 'react'
 
 export default function AboutPage() {
+  const [desktopLoaded, setDesktopLoaded] = useState(false)
+  const [mobileLoaded, setMobileLoaded] = useState(false)
+
   return (
     <>
       <style>{`
@@ -11,12 +15,33 @@ export default function AboutPage() {
         .page-shell {
           position: fixed;
           inset: 0;
-          background: #0e0e0e url('/ABOUTPAGE.jpeg?v=2') center/cover no-repeat;
+          background: #1b1611;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
           gap: 40px;
+          overflow: hidden;
+        }
+
+        .bg-image {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center;
+          opacity: 0;
+          transition: opacity 0.24s ease-out;
+          pointer-events: none;
+        }
+
+        .bg-image.loaded {
+          opacity: 1;
+        }
+
+        .bg-image.mobile {
+          display: none;
         }
 
         .page-shell::before {
@@ -48,8 +73,13 @@ export default function AboutPage() {
         .back-btn:hover { color: rgba(245,240,232,1); }
 
         @media (max-width: 768px) {
-          .page-shell {
-            background: #0e0e0e url('/mobileabout.jpeg?v=2') center top/cover no-repeat;
+          .bg-image.desktop {
+            display: none;
+          }
+
+          .bg-image.mobile {
+            display: block;
+            object-position: center top;
           }
 
           .page-shell::before {
@@ -64,6 +94,24 @@ export default function AboutPage() {
         }
       `}</style>
       <div className="page-shell">
+        <img
+          src="/ABOUTPAGE.jpeg?v=3"
+          alt=""
+          aria-hidden="true"
+          className={`bg-image desktop${desktopLoaded ? ' loaded' : ''}`}
+          loading="eager"
+          fetchPriority="high"
+          onLoad={() => setDesktopLoaded(true)}
+        />
+        <img
+          src="/mobileabout.jpeg?v=3"
+          alt=""
+          aria-hidden="true"
+          className={`bg-image mobile${mobileLoaded ? ' loaded' : ''}`}
+          loading="eager"
+          fetchPriority="high"
+          onLoad={() => setMobileLoaded(true)}
+        />
         <Link href="/" className="back-btn">← BACK</Link>
       </div>
     </>
