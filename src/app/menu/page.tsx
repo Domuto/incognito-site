@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react'
 
 export default function MenuPage() {
   const [secretButtonShown, setSecretButtonShown] = useState(true)
+  const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
     // Randomly show/hide the secret button with glitchy animations
@@ -20,6 +21,9 @@ export default function MenuPage() {
   const handleSecretClick = () => {
     alert('🤫')
   }
+
+  const nextPage = () => setCurrentPage(p => p + 1)
+  const prevPage = () => setCurrentPage(p => Math.max(1, p - 1))
   return (
     <>
       <style>{`
@@ -142,6 +146,64 @@ export default function MenuPage() {
           color: rgba(245,240,232,0.35);
           text-transform: uppercase;
         }
+        .flipbook-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 20px;
+          width: 100%;
+          height: 100%;
+          max-width: 800px;
+          max-height: 600px;
+        }
+        .flipbook-viewer {
+          position: relative;
+          width: 100%;
+          max-width: 700px;
+          aspect-ratio: 16/9;
+          background: rgba(0, 0, 0, 0.5);
+          border: 2px solid rgba(245, 240, 232, 0.3);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+        }
+        .flipbook-pdf {
+          width: 100%;
+          height: 100%;
+        }
+        .flipbook-controls {
+          display: flex;
+          gap: 20px;
+          align-items: center;
+          justify-content: center;
+        }
+        .flip-btn {
+          background: rgba(245, 240, 232, 0.2);
+          border: 1px solid rgba(245, 240, 232, 0.5);
+          color: rgba(245, 240, 232, 0.8);
+          padding: 10px 20px;
+          font-family: 'Space Mono', monospace;
+          font-size: 12px;
+          letter-spacing: 0.1em;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          text-transform: uppercase;
+        }
+        .flip-btn:hover {
+          background: rgba(245, 240, 232, 0.3);
+          border-color: rgba(245, 240, 232, 1);
+          color: rgba(245, 240, 232, 1);
+        }
+        .page-counter {
+          font-family: 'Space Mono', monospace;
+          font-size: 12px;
+          color: rgba(245, 240, 232, 0.6);
+          min-width: 100px;
+          text-align: center;
+        }
       `}</style>
       <div className="page-shell">
         <Link href="/" className="back-btn">← BACK</Link>
@@ -152,8 +214,24 @@ export default function MenuPage() {
         >
           ••••••
         </button>
-        <h1 className="page-title">THE FILES</h1>
-        <p className="page-note">Coming soon</p>
+        <div className="flipbook-container">
+          <div className="flipbook-viewer">
+            <iframe
+              src={`/INCOG MENU WEB.pdf#page=${currentPage}`}
+              className="flipbook-pdf"
+              title="Incognito Menu"
+            />
+          </div>
+          <div className="flipbook-controls">
+            <button className="flip-btn" onClick={prevPage} disabled={currentPage === 1}>
+              ← PREVIOUS
+            </button>
+            <div className="page-counter">Page {currentPage}</div>
+            <button className="flip-btn" onClick={nextPage}>
+              NEXT →
+            </button>
+          </div>
+        </div>
       </div>
     </>
   )
