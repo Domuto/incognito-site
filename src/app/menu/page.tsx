@@ -1,41 +1,14 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useRef, useState } from 'react'
-import { Document, Page, pdfjs } from 'react-pdf'
-
-pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
+import { useState } from 'react'
 
 export default function MenuPage() {
   const [currentPage, setCurrentPage] = useState(1)
-  const [numPages, setNumPages] = useState<number>(1)
-  const [pageWidth, setPageWidth] = useState(820)
-  const viewerRef = useRef<HTMLDivElement>(null)
-  const menuPdfUrl = '/INCOG%20MENU%20WEB.pdf'
+  const totalPages = 14
+  const menuImageUrl = `/incog_page-${String(currentPage).padStart(2, '0')}.png`
 
-  useEffect(() => {
-    const updateWidth = () => {
-      if (!viewerRef.current) return
-      setPageWidth(Math.max(240, Math.floor(viewerRef.current.clientWidth - 24)))
-    }
-
-    updateWidth()
-    const observer = new ResizeObserver(updateWidth)
-    if (viewerRef.current) observer.observe(viewerRef.current)
-
-    window.addEventListener('resize', updateWidth)
-    return () => {
-      observer.disconnect()
-      window.removeEventListener('resize', updateWidth)
-    }
-  }, [])
-
-  const onLoadSuccess = ({ numPages: totalPages }: { numPages: number }) => {
-    setNumPages(totalPages)
-    setCurrentPage(prev => Math.min(prev, totalPages))
-  }
-
-  const nextPage = () => setCurrentPage(p => Math.min(numPages, p + 1))
+  const nextPage = () => setCurrentPage(p => Math.min(totalPages, p + 1))
   const prevPage = () => setCurrentPage(p => Math.max(1, p - 1))
 
   return (
@@ -101,48 +74,21 @@ export default function MenuPage() {
           position: relative;
           width: 100%;
           max-width: 860px;
-          min-height: 320px;
-          background: rgba(0, 0, 0, 0.28);
+          height: min(70vh, 700px);
+          background: rgba(0, 0, 0, 0.5);
           border: 2px solid rgba(245, 240, 232, 0.3);
           display: flex;
           align-items: center;
           justify-content: center;
           overflow: hidden;
           box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-          padding: 12px;
         }
 
-        .flipbook-page {
+        .flipbook-image {
           width: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .flipbook-page canvas {
-          max-width: 100%;
-          height: auto !important;
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
-          background: #fff;
-        }
-
-        .menu-loading,
-        .menu-error {
-          font-family: 'Space Mono', monospace;
-          font-size: 12px;
-          letter-spacing: 0.12em;
-          color: rgba(245,240,232,0.75);
-          text-transform: uppercase;
-          text-align: center;
-        }
-
-        .menu-error-link {
-          color: rgba(245,240,232,0.9);
-          border: 1px solid rgba(245,240,232,0.5);
-          text-decoration: none;
-          padding: 8px 12px;
-          display: inline-block;
-          margin-top: 10px;
+          height: 100%;
+          object-fit: contain;
+          background: #0f0f0f;
         }
 
         .flipbook-controls {
@@ -185,18 +131,6 @@ export default function MenuPage() {
           text-align: center;
         }
 
-        .mobile-open {
-          display: none;
-          font-family: 'Space Mono', monospace;
-          font-size: 12px;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          color: rgba(245,240,232,0.85);
-          text-decoration: none;
-          border: 1px solid rgba(245,240,232,0.5);
-          padding: 10px 14px;
-        }
-
         @media (max-width: 768px) {
           .page-shell {
             justify-content: flex-start;
@@ -211,56 +145,28 @@ export default function MenuPage() {
           }
 
           .flipbook-viewer {
-            min-height: 280px;
-            padding: 8px;
-          }
-
-          .flipbook-page canvas {
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
-          }
-
-          .mobile-open {
-            display: inline-block;
+            height: 56vh;
+            min-height: 340px;
           }
         }
       `}</style>
       <div className="page-shell">
         <Link href="/" className="back-btn">← BACK</Link>
         <div className="flipbook-container">
-          <div className="flipbook-viewer" ref={viewerRef}>
-            <div className="flipbook-page">
-              <Document
-                file={menuPdfUrl}
-                onLoadSuccess={onLoadSuccess}
-                loading={<div className="menu-loading">LOADING MENU…</div>}
-                error={
-                  <div className="menu-error">
-                    MENU PREVIEW FAILED
-                    <br />
-                    <a className="menu-error-link" href={menuPdfUrl} target="_blank" rel="noreferrer">
-                      OPEN PDF
-                    </a>
-                  </div>
-                }
-              >
-                <Page
-                  pageNumber={currentPage}
-                  width={pageWidth}
-                  renderTextLayer={false}
-                  renderAnnotationLayer={false}
-                />
-              </Document>
-            </div>
+          <div className="flipbook-viewer">
+            <img
+              src={menuImageUrl}
+              className="flipbook-image"
+              alt={`Incognito Menu Page ${currentPage}`}
+              draggable={false}
+            />
           </div>
-          <a className="mobile-open" href={`${menuPdfUrl}#page=${currentPage}`} target="_blank" rel="noreferrer">
-            OPEN MENU
-          </a>
           <div className="flipbook-controls">
             <button className="flip-btn" onClick={prevPage} disabled={currentPage === 1}>
               ← PREVIOUS
             </button>
-            <div className="page-counter">Page {currentPage} / {numPages}</div>
-            <button className="flip-btn" onClick={nextPage} disabled={currentPage >= numPages}>
+            <div className="page-counter">Page {currentPage} / {totalPages}</div>
+            <button className="flip-btn" onClick={nextPage} disabled={currentPage >= totalPages}>
               NEXT →
             </button>
           </div>
