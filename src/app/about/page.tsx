@@ -151,7 +151,7 @@ export default function AboutPage() {
         >
           ••••••
         </button>
-        <h1 className="page-title">THE ALIBI</h1>
+        <h1 className="page-title" style={{ display: 'none' }}>THE ALIBI</h1>
         <p className="page-note">Coming soon</p>
       </div>
     </>

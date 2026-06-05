@@ -77,10 +77,10 @@ export default function Home() {
         {stage >= 2 && (
           <div className={`logo-reveal${stage >= 3 ? ' settled' : ''}`}>
             <Image
-              src="/logo.png"
+              src="/behind.PNG"
               alt="INCÓGNITO"
               width={400}
-              height={150}
+              height={400}
               className="logo-image"
               priority
             />
