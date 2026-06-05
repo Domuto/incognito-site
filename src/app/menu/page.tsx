@@ -5,13 +5,16 @@ import { useState } from 'react'
 
 export default function MenuPage() {
   const [currentPage, setCurrentPage] = useState(1)
+  const menuPdfUrl = '/INCOG%20MENU%20WEB.pdf'
 
   const nextPage = () => setCurrentPage(p => p + 1)
   const prevPage = () => setCurrentPage(p => Math.max(1, p - 1))
+
   return (
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap');
+
         .page-shell {
           position: fixed;
           inset: 0;
@@ -20,10 +23,11 @@ export default function MenuPage() {
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          gap: 40px;
-          padding: 80px 20px 20px;
+          gap: 24px;
+          padding: 84px 16px 24px;
           overflow-y: auto;
         }
+
         .page-shell::before {
           content: '';
           position: absolute;
@@ -35,10 +39,12 @@ export default function MenuPage() {
           pointer-events: none;
           z-index: 0;
         }
+
         .page-shell > * {
           position: relative;
           z-index: 1;
         }
+
         .back-btn {
           font-family: 'Bebas Neue', sans-serif;
           font-size: 14px;
@@ -51,85 +57,23 @@ export default function MenuPage() {
           transition: color 0.2s;
           z-index: 100;
         }
+
         .back-btn:hover { color: rgba(245,240,232,1); }
+
         .flipbook-container {
           display: flex;
           flex-direction: column;
-          gap: 30px;
+          gap: 16px;
           align-items: center;
           width: 100%;
+          max-width: 920px;
         }
-        @keyframes glitch-show {
-          0% {
-            opacity: 0;
-            transform: translate(2px, -2px);
-            clip-path: inset(0 50% 0 0);
-          }
-          20% {
-            clip-path: inset(0 30% 0 0);
-          }
-          40% {
-            opacity: 1;
-            transform: translate(-1px, 1px);
-            clip-path: inset(0 0 0 0);
-          }
-          60% {
-            transform: translate(1px, -1px);
-          }
-          100% {
-            opacity: 1;
-            transform: translate(0, 0);
-            clip-path: inset(0 0 0 0);
-          }
-        }
-        @keyframes glitch-hide {
-          0% {
-            opacity: 1;
-            transform: translate(0, 0);
-          }
-          50% {
-            opacity: 0.3;
-            transform: translate(-2px, 2px);
-          }
-          100% {
-            opacity: 0;
-            visibility: hidden;
-            transform: translate(1px, -1px);
-          }
-        }
-        .secret-btn:hover {
-          border-color: rgba(245,240,232,1);
-          color: rgba(245,240,232,1);
-          box-shadow: 0 0 8px rgba(245,240,232,0.3);
-        }
-        .page-title {
-          font-size: clamp(48px, 10vw, 96px);
-          color: #f5f0e8;
-          letter-spacing: 0.08em;
-        }
-        .page-note {
-          font-family: 'Space Mono', monospace;
-          font-size: 12px;
-          letter-spacing: 0.15em;
-          color: rgba(245,240,232,0.35);
-          text-transform: uppercase;
-        }
-        .flipbook-container {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: 20px;
-          width: 100%;
-          height: 100%;
-          max-width: 800px;
-          max-height: 600px;
-        }
+
         .flipbook-viewer {
           position: relative;
           width: 100%;
-          max-width: 700px;
-          aspect-ratio: 16/9;
+          max-width: 860px;
+          height: min(70vh, 700px);
           background: rgba(0, 0, 0, 0.5);
           border: 2px solid rgba(245, 240, 232, 0.3);
           display: flex;
@@ -138,16 +82,21 @@ export default function MenuPage() {
           overflow: hidden;
           box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
         }
+
         .flipbook-pdf {
           width: 100%;
           height: 100%;
+          border: 0;
         }
+
         .flipbook-controls {
           display: flex;
-          gap: 20px;
+          gap: 12px;
           align-items: center;
           justify-content: center;
+          flex-wrap: wrap;
         }
+
         .flip-btn {
           background: rgba(245, 240, 232, 0.2);
           border: 1px solid rgba(245, 240, 232, 0.5);
@@ -160,11 +109,18 @@ export default function MenuPage() {
           transition: all 0.3s ease;
           text-transform: uppercase;
         }
-        .flip-btn:hover {
+
+        .flip-btn:hover:not(:disabled) {
           background: rgba(245, 240, 232, 0.3);
           border-color: rgba(245, 240, 232, 1);
           color: rgba(245, 240, 232, 1);
         }
+
+        .flip-btn:disabled {
+          opacity: 0.35;
+          cursor: not-allowed;
+        }
+
         .page-counter {
           font-family: 'Space Mono', monospace;
           font-size: 12px;
@@ -172,17 +128,55 @@ export default function MenuPage() {
           min-width: 100px;
           text-align: center;
         }
+
+        .mobile-open {
+          display: none;
+          font-family: 'Space Mono', monospace;
+          font-size: 12px;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: rgba(245,240,232,0.85);
+          text-decoration: none;
+          border: 1px solid rgba(245,240,232,0.5);
+          padding: 10px 14px;
+        }
+
+        @media (max-width: 768px) {
+          .page-shell {
+            justify-content: flex-start;
+            gap: 14px;
+            padding: 76px 12px 16px;
+          }
+
+          .back-btn {
+            top: 18px;
+            left: 16px;
+            font-size: 12px;
+          }
+
+          .flipbook-viewer {
+            height: 56vh;
+            min-height: 340px;
+          }
+
+          .mobile-open {
+            display: inline-block;
+          }
+        }
       `}</style>
       <div className="page-shell">
         <Link href="/" className="back-btn">← BACK</Link>
         <div className="flipbook-container">
           <div className="flipbook-viewer">
             <iframe
-              src={`/INCOG MENU WEB.pdf#page=${currentPage}`}
+              src={`${menuPdfUrl}#page=${currentPage}`}
               className="flipbook-pdf"
               title="Incognito Menu"
             />
           </div>
+          <a className="mobile-open" href={`${menuPdfUrl}#page=${currentPage}`} target="_blank" rel="noreferrer">
+            OPEN MENU
+          </a>
           <div className="flipbook-controls">
             <button className="flip-btn" onClick={prevPage} disabled={currentPage === 1}>
               ← PREVIOUS
