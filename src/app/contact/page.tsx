@@ -23,7 +23,7 @@ export default function ContactPage() {
     const observer = new MutationObserver(hideTripleseatLink)
     observer.observe(mountNode, { childList: true, subtree: true })
 
-    const loadScript = (src: string) =>
+    const loadScript = (src: string, parent: ParentNode = document.head) =>
       new Promise<void>((resolve, reject) => {
         const existingScript = document.querySelector(`script[src="${src}"]`)
         if (existingScript) {
@@ -37,7 +37,7 @@ export default function ContactPage() {
         script.defer = true
         script.onload = () => resolve()
         script.onerror = () => reject(new Error(`Failed to load ${src}`))
-        document.head.appendChild(script)
+        parent.appendChild(script)
       })
 
     const initializeTripleseat = async () => {
@@ -47,6 +47,7 @@ export default function ContactPage() {
 
         await loadScript(
           'https://api.tripleseat.com/v1/leads/ts_script.js?lead_form_id=26805&public_key=90e0e457ced62ccf86f2f5d9a0deb7857a4676d9',
+          mountNode,
         )
         if (cancelled) return
 
