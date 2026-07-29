@@ -13,42 +13,61 @@ export default function ContactPage() {
     const mountNode = tripleseatMountRef.current
     mountNode.innerHTML = ''
 
-    const frame = document.createElement('iframe')
-    frame.title = 'Tripleseat contact form'
-    frame.setAttribute('loading', 'eager')
-    frame.setAttribute('scrolling', 'no')
-    frame.setAttribute('sandbox', 'allow-scripts allow-forms allow-same-origin')
-    frame.className = 'tripleseat-frame'
-    frame.style.width = '100%'
-    frame.style.minHeight = '1200px'
-    frame.style.border = '0'
-    frame.style.display = 'block'
-    frame.style.background = 'transparent'
-    frame.srcdoc = `<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style>
-      html, body { margin: 0; padding: 0; background: transparent; color: #f5f0e8; }
-      body { font-family: 'Space Mono', monospace; }
-      #tripleseat_embed_form,
-      #tripleseat_embed_form_inline { width: 100%; }
-      #tripleseat_link { display: none !important; }
-    </style>
-  </head>
-  <body>
-    <script src="https://www.google.com/recaptcha/api.js"></script>
-    <script src="https://api.tripleseat.com/v1/leads/ts_script.js?lead_form_id=26805&public_key=90e0e457ced62ccf86f2f5d9a0deb7857a4676d9"></script>
-  </body>
-</html>`
-    frame.onload = () => {
-      setLoaded(true)
+    const styleTripleseatEmbed = () => {
+      const form = document.querySelector('#tripleseat_embed_form, #tripleseat_embed_form_inline')
+      if (form instanceof HTMLElement) {
+        form.style.position = 'relative'
+        form.style.zIndex = '2'
+        form.style.width = 'min(92vw, 580px)'
+        form.style.margin = '20px auto 24px'
+        form.style.border = '1px solid rgba(245, 240, 232, 0.26)'
+        form.style.background = 'rgba(10, 10, 10, 0.55)'
+        form.style.backdropFilter = 'blur(4px)'
+        form.style.padding = 'clamp(22px, 4vw, 36px)'
+        form.style.boxShadow = '0 20px 48px rgba(0, 0, 0, 0.48)'
+        form.style.color = '#f5f0e8'
+        form.style.fontFamily = 'Space Mono, monospace'
+      }
     }
 
-    mountNode.appendChild(frame)
+    const bodyObserver = new MutationObserver(styleTripleseatEmbed)
+    bodyObserver.observe(document.body, { childList: true, subtree: true })
+
+    const styleInterval = window.setInterval(styleTripleseatEmbed, 100)
+
+    const loadScript = (src: string) =>
+      new Promise<void>((resolve, reject) => {
+        const existingScript = document.querySelector(`script[src="${src}"]`)
+        if (existingScript) {
+          resolve()
+          return
+        }
+
+        const script = document.createElement('script')
+        script.src = src
+        script.async = true
+        script.defer = true
+        script.onload = () => resolve()
+        script.onerror = () => reject(new Error(`Failed to load ${src}`))
+        document.head.appendChild(script)
+      })
+
+    const initializeTripleseat = async () => {
+      try {
+        await loadScript('https://www.google.com/recaptcha/api.js')
+        await loadScript('https://api.tripleseat.com/v1/leads/ts_script.js?lead_form_id=26805&public_key=90e0e457ced62ccf86f2f5d9a0deb7857a4676d9')
+        styleTripleseatEmbed()
+        setLoaded(true)
+      } catch {
+        setLoaded(true)
+      }
+    }
+
+    void initializeTripleseat()
 
     return () => {
+      bodyObserver.disconnect()
+      window.clearInterval(styleInterval)
       mountNode.innerHTML = ''
     }
   }, [])
@@ -61,6 +80,7 @@ export default function ContactPage() {
         .contact-shell {
           position: fixed;
           inset: 0;
+          z-index: 0;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -101,21 +121,6 @@ export default function ContactPage() {
 
         .contact-card #tripleseat_embed_form,
         .contact-card #tripleseat_embed_form_inline {
-          color: #f5f0e8;
-          font-family: 'Space Mono', monospace;
-        }
-
-        body > #tripleseat_embed_form,
-        body > #tripleseat_embed_form_inline {
-          position: relative;
-          z-index: 2;
-          width: min(92vw, 580px);
-          margin: 20px auto 24px;
-          border: 1px solid rgba(245, 240, 232, 0.26);
-          background: rgba(10, 10, 10, 0.55);
-          backdrop-filter: blur(4px);
-          padding: clamp(22px, 4vw, 36px);
-          box-shadow: 0 20px 48px rgba(0, 0, 0, 0.48);
           color: #f5f0e8;
           font-family: 'Space Mono', monospace;
         }
