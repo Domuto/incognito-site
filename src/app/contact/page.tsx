@@ -1,88 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useRef, useState } from 'react'
 
 export default function ContactPage() {
-  const tripleseatMountRef = useRef<HTMLDivElement>(null)
-  const [loaded, setLoaded] = useState(false)
-
-  useEffect(() => {
-    if (!tripleseatMountRef.current) return
-
-    const mountNode = tripleseatMountRef.current
-    mountNode.innerHTML = ''
-
-    const styleTripleseatEmbed = () => {
-      const form = document.querySelector('#tripleseat_embed_form, #tripleseat_embed_form_inline')
-      if (form instanceof HTMLElement) {
-        form.style.position = 'relative'
-        form.style.zIndex = '2'
-        form.style.width = 'min(92vw, 580px)'
-        form.style.margin = '20px auto 24px'
-        form.style.border = '1px solid rgba(245, 240, 232, 0.26)'
-        form.style.background = 'rgba(10, 10, 10, 0.55)'
-        form.style.backdropFilter = 'blur(4px)'
-        form.style.padding = 'clamp(22px, 4vw, 36px)'
-        form.style.boxShadow = '0 20px 48px rgba(0, 0, 0, 0.48)'
-        form.style.color = '#f5f0e8'
-        form.style.fontFamily = 'Space Mono, monospace'
-      }
-    }
-
-    const bodyObserver = new MutationObserver(styleTripleseatEmbed)
-    bodyObserver.observe(document.body, { childList: true, subtree: true })
-
-    const styleInterval = window.setInterval(styleTripleseatEmbed, 100)
-
-    const originalInsertAdjacentHTML = Element.prototype.insertAdjacentHTML
-    Element.prototype.insertAdjacentHTML = function (position: InsertPosition, html: string) {
-      if (this.tagName === 'SCRIPT' && (this as HTMLScriptElement).src.includes('api.tripleseat.com/v1/leads/ts_script.js')) {
-        mountNode.insertAdjacentHTML('beforeend', html)
-        return
-      }
-
-      return originalInsertAdjacentHTML.call(this, position, html)
-    }
-
-    const loadScript = (src: string) =>
-      new Promise<void>((resolve, reject) => {
-        const existingScript = document.querySelector(`script[src="${src}"]`)
-        if (existingScript) {
-          resolve()
-          return
-        }
-
-        const script = document.createElement('script')
-        script.src = src
-        script.async = true
-        script.defer = true
-        script.onload = () => resolve()
-        script.onerror = () => reject(new Error(`Failed to load ${src}`))
-        document.head.appendChild(script)
-      })
-
-    const initializeTripleseat = async () => {
-      try {
-        await loadScript('https://www.google.com/recaptcha/api.js')
-        await loadScript('https://api.tripleseat.com/v1/leads/ts_script.js?lead_form_id=26805&public_key=90e0e457ced62ccf86f2f5d9a0deb7857a4676d9')
-        styleTripleseatEmbed()
-        setLoaded(true)
-      } catch {
-        setLoaded(true)
-      }
-    }
-
-    void initializeTripleseat()
-
-    return () => {
-      bodyObserver.disconnect()
-      window.clearInterval(styleInterval)
-      Element.prototype.insertAdjacentHTML = originalInsertAdjacentHTML
-      mountNode.innerHTML = ''
-    }
-  }, [])
-
   return (
     <>
       <style>{`
@@ -91,7 +11,6 @@ export default function ContactPage() {
         .contact-shell {
           position: fixed;
           inset: 0;
-          z-index: 0;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -128,143 +47,6 @@ export default function ContactPage() {
           box-shadow: 0 20px 48px rgba(0, 0, 0, 0.48);
           z-index: 1;
           margin: auto;
-        }
-
-        .contact-card #tripleseat_embed_form,
-        .contact-card #tripleseat_embed_form_inline {
-          color: #f5f0e8;
-          font-family: 'Space Mono', monospace;
-        }
-
-        .contact-card #tripleseat_embed_form table,
-        .contact-card #tripleseat_embed_form_inline table {
-          width: 100%;
-          border-collapse: separate;
-          border-spacing: 0 12px;
-        }
-
-        .contact-card #tripleseat_embed_form td,
-        .contact-card #tripleseat_embed_form_inline td {
-          padding: 0;
-        }
-
-        .contact-card #tripleseat_embed_form h2,
-        .contact-card #tripleseat_embed_form_inline h2 {
-          font-family: 'Bebas Neue', sans-serif;
-          font-size: 22px;
-          letter-spacing: 0.08em;
-          color: #f5f0e8;
-          margin: 0 0 2px;
-        }
-
-        .contact-card #tripleseat_embed_form label,
-        .contact-card #tripleseat_embed_form_inline label {
-          display: block;
-          font-family: 'Space Mono', monospace;
-          font-size: 10px;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          color: rgba(245, 240, 232, 0.55);
-          margin-bottom: 5px;
-        }
-
-        .contact-card #tripleseat_embed_form input,
-        .contact-card #tripleseat_embed_form select,
-        .contact-card #tripleseat_embed_form textarea,
-        .contact-card #tripleseat_embed_form_inline input,
-        .contact-card #tripleseat_embed_form_inline select,
-        .contact-card #tripleseat_embed_form_inline textarea {
-          width: 100%;
-          background: rgba(245, 240, 232, 0.06);
-          border: 1px solid rgba(245, 240, 232, 0.22);
-          border-radius: 2px;
-          color: #f5f0e8;
-          font-family: 'Space Mono', monospace;
-          font-size: 12px;
-          padding: 10px 12px;
-          outline: none;
-          box-sizing: border-box;
-        }
-
-        .contact-card #tripleseat_embed_form input:focus,
-        .contact-card #tripleseat_embed_form select:focus,
-        .contact-card #tripleseat_embed_form textarea:focus,
-        .contact-card #tripleseat_embed_form_inline input:focus,
-        .contact-card #tripleseat_embed_form_inline select:focus,
-        .contact-card #tripleseat_embed_form_inline textarea:focus {
-          border-color: rgba(245, 240, 232, 0.6);
-          background: rgba(245, 240, 232, 0.1);
-          outline: none;
-        }
-
-        .contact-card #tripleseat_embed_form select option,
-        .contact-card #tripleseat_embed_form_inline select option {
-          background: #14161c;
-          color: #f5f0e8;
-        }
-
-        .contact-card #tripleseat_embed_form textarea,
-        .contact-card #tripleseat_embed_form_inline textarea {
-          min-height: 90px;
-          resize: vertical;
-        }
-
-        .contact-card #tripleseat_embed_form .button,
-        .contact-card #tripleseat_embed_form_inline .button {
-          font-family: 'Bebas Neue', sans-serif;
-          font-size: 18px;
-          letter-spacing: 0.14em;
-          color: #14161c;
-          background: #f5f0e8;
-          border: none;
-          border-radius: 0;
-          padding: 13px 24px;
-          width: 100%;
-          cursor: pointer;
-          transition: background 0.2s ease, transform 0.2s ease;
-        }
-
-        .contact-card #tripleseat_embed_form .button:hover,
-        .contact-card #tripleseat_embed_form_inline .button:hover {
-          background: #fff;
-          transform: translateY(-1px);
-        }
-
-        .contact-card #tripleseat_embed_form .errorExplanation,
-        .contact-card #tripleseat_embed_form_inline .errorExplanation {
-          width: 100%;
-          box-sizing: border-box;
-          background: rgba(224, 85, 85, 0.1);
-          border: 1px solid rgba(224, 85, 85, 0.35);
-          color: #f5f0e8;
-          margin: 0 0 16px;
-        }
-
-        .contact-card #tripleseat_embed_form .errorExplanation h2,
-        .contact-card #tripleseat_embed_form_inline .errorExplanation h2 {
-          font-size: 18px;
-          color: #e05555;
-          margin-bottom: 6px;
-        }
-
-        .contact-card #tripleseat_embed_form .help-block.danger,
-        .contact-card #tripleseat_embed_form_inline .help-block.danger {
-          color: #e05555;
-        }
-
-        .contact-card #tripleseat_link {
-          display: none !important;
-        }
-
-        .contact-card #tripleseat_embed_form .ui-datepicker,
-        .contact-card #tripleseat_embed_form_inline .ui-datepicker {
-          background: #14161c;
-          border: 1px solid rgba(245, 240, 232, 0.22);
-        }
-
-        .contact-card #tripleseat_embed_form .ui-datepicker a,
-        .contact-card #tripleseat_embed_form_inline .ui-datepicker a {
-          color: #f5f0e8;
         }
 
         .contact-kicker {
@@ -496,8 +278,21 @@ export default function ContactPage() {
             For any Private Events, buyouts and exclusive experiences
           </p>
 
-          {!loaded && <p className="tripleseat-loading">Loading contact form...</p>}
-          <div ref={tripleseatMountRef} />
+          <p className="tripleseat-loading">Loading contact form...</p>
+          <iframe
+            title="Tripleseat contact form"
+            src="/contact/embed"
+            className="tripleseat-frame"
+            loading="eager"
+            sandbox="allow-scripts allow-forms allow-same-origin"
+            style={{
+              width: '100%',
+              minHeight: 1200,
+              border: 0,
+              display: 'block',
+              background: 'transparent',
+            }}
+          />
         </section>
       </main>
     </>
