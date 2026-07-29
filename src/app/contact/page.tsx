@@ -134,6 +134,21 @@ export default function ContactPage() {
           font-family: 'Space Mono', monospace;
         }
 
+        body > #tripleseat_embed_form,
+        body > #tripleseat_embed_form_inline {
+          position: relative;
+          z-index: 2;
+          width: min(92vw, 580px);
+          margin: 20px auto 24px;
+          border: 1px solid rgba(245, 240, 232, 0.26);
+          background: rgba(10, 10, 10, 0.55);
+          backdrop-filter: blur(4px);
+          padding: clamp(22px, 4vw, 36px);
+          box-shadow: 0 20px 48px rgba(0, 0, 0, 0.48);
+          color: #f5f0e8;
+          font-family: 'Space Mono', monospace;
+        }
+
         .contact-card #tripleseat_embed_form table,
         .contact-card #tripleseat_embed_form_inline table {
           width: 100%;
