@@ -25,6 +25,20 @@ export default function ContactPage() {
       if (form && !mountNode.contains(form)) {
         mountNode.appendChild(form)
       }
+
+      if (form instanceof HTMLElement) {
+        form.style.position = 'relative'
+        form.style.zIndex = '2'
+        form.style.width = 'min(92vw, 580px)'
+        form.style.margin = '20px auto 24px'
+        form.style.border = '1px solid rgba(245, 240, 232, 0.26)'
+        form.style.background = 'rgba(10, 10, 10, 0.55)'
+        form.style.backdropFilter = 'blur(4px)'
+        form.style.padding = 'clamp(22px, 4vw, 36px)'
+        form.style.boxShadow = '0 20px 48px rgba(0, 0, 0, 0.48)'
+        form.style.color = '#f5f0e8'
+        form.style.fontFamily = 'Space Mono, monospace'
+      }
     }
 
     const observer = new MutationObserver(hideTripleseatLink)
