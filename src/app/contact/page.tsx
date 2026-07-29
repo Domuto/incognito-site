@@ -20,8 +20,21 @@ export default function ContactPage() {
       })
     }
 
+    const moveTripleseatForm = () => {
+      const form = document.querySelector('#tripleseat_embed_form, #tripleseat_embed_form_inline')
+      if (form && !mountNode.contains(form)) {
+        mountNode.appendChild(form)
+      }
+    }
+
     const observer = new MutationObserver(hideTripleseatLink)
     observer.observe(mountNode, { childList: true, subtree: true })
+
+    const bodyObserver = new MutationObserver(() => {
+      moveTripleseatForm()
+      hideTripleseatLink()
+    })
+    bodyObserver.observe(document.body, { childList: true, subtree: true })
 
     const loadScript = (src: string, parent: ParentNode = document.head) =>
       new Promise<void>((resolve, reject) => {
@@ -51,6 +64,7 @@ export default function ContactPage() {
         )
         if (cancelled) return
 
+        moveTripleseatForm()
         hideTripleseatLink()
         setLoaded(true)
       } catch {
@@ -63,6 +77,7 @@ export default function ContactPage() {
     return () => {
       cancelled = true
       observer.disconnect()
+      bodyObserver.disconnect()
       mountNode.innerHTML = ''
     }
   }, [])
