@@ -35,6 +35,16 @@ export default function ContactPage() {
 
     const styleInterval = window.setInterval(styleTripleseatEmbed, 100)
 
+    const originalInsertAdjacentHTML = Element.prototype.insertAdjacentHTML
+    Element.prototype.insertAdjacentHTML = function (position: InsertPosition, html: string) {
+      if (this.tagName === 'SCRIPT' && (this as HTMLScriptElement).src.includes('api.tripleseat.com/v1/leads/ts_script.js')) {
+        mountNode.insertAdjacentHTML('beforeend', html)
+        return
+      }
+
+      return originalInsertAdjacentHTML.call(this, position, html)
+    }
+
     const loadScript = (src: string) =>
       new Promise<void>((resolve, reject) => {
         const existingScript = document.querySelector(`script[src="${src}"]`)
@@ -68,6 +78,7 @@ export default function ContactPage() {
     return () => {
       bodyObserver.disconnect()
       window.clearInterval(styleInterval)
+      Element.prototype.insertAdjacentHTML = originalInsertAdjacentHTML
       mountNode.innerHTML = ''
     }
   }, [])
