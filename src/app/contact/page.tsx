@@ -12,97 +12,43 @@ export default function ContactPage() {
 
     const mountNode = tripleseatMountRef.current
     mountNode.innerHTML = ''
-    let cancelled = false
 
-    const hideTripleseatLink = () => {
-      mountNode.querySelectorAll('#tripleseat_link').forEach((link) => {
-        link.remove()
-      })
+    const frame = document.createElement('iframe')
+    frame.title = 'Tripleseat contact form'
+    frame.setAttribute('loading', 'eager')
+    frame.setAttribute('scrolling', 'no')
+    frame.setAttribute('sandbox', 'allow-scripts allow-forms allow-same-origin')
+    frame.className = 'tripleseat-frame'
+    frame.style.width = '100%'
+    frame.style.minHeight = '1200px'
+    frame.style.border = '0'
+    frame.style.display = 'block'
+    frame.style.background = 'transparent'
+    frame.srcdoc = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      html, body { margin: 0; padding: 0; background: transparent; color: #f5f0e8; }
+      body { font-family: 'Space Mono', monospace; }
+      #tripleseat_embed_form,
+      #tripleseat_embed_form_inline { width: 100%; }
+      #tripleseat_link { display: none !important; }
+    </style>
+  </head>
+  <body>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script src="https://api.tripleseat.com/v1/leads/ts_script.js?lead_form_id=26805&public_key=90e0e457ced62ccf86f2f5d9a0deb7857a4676d9"></script>
+  </body>
+</html>`
+    frame.onload = () => {
+      setLoaded(true)
     }
 
-    const moveTripleseatForm = () => {
-      const form = document.querySelector('#tripleseat_embed_form, #tripleseat_embed_form_inline')
-      if (form && !mountNode.contains(form)) {
-        mountNode.appendChild(form)
-      }
-
-      if (form instanceof HTMLElement) {
-        form.style.position = 'relative'
-        form.style.zIndex = '2'
-        form.style.width = 'min(92vw, 580px)'
-        form.style.margin = '20px auto 24px'
-        form.style.border = '1px solid rgba(245, 240, 232, 0.26)'
-        form.style.background = 'rgba(10, 10, 10, 0.55)'
-        form.style.backdropFilter = 'blur(4px)'
-        form.style.padding = 'clamp(22px, 4vw, 36px)'
-        form.style.boxShadow = '0 20px 48px rgba(0, 0, 0, 0.48)'
-        form.style.color = '#f5f0e8'
-        form.style.fontFamily = 'Space Mono, monospace'
-      }
-    }
-
-    const observer = new MutationObserver(hideTripleseatLink)
-    observer.observe(mountNode, { childList: true, subtree: true })
-
-    const bodyObserver = new MutationObserver(() => {
-      moveTripleseatForm()
-      hideTripleseatLink()
-    })
-    bodyObserver.observe(document.body, { childList: true, subtree: true })
-
-    const syncInterval = window.setInterval(() => {
-      moveTripleseatForm()
-      hideTripleseatLink()
-
-      const form = document.querySelector('#tripleseat_embed_form, #tripleseat_embed_form_inline')
-      if (form instanceof HTMLElement && mountNode.contains(form)) {
-        window.clearInterval(syncInterval)
-      }
-    }, 100)
-
-    const loadScript = (src: string, parent: ParentNode = document.head) =>
-      new Promise<void>((resolve, reject) => {
-        const existingScript = document.querySelector(`script[src="${src}"]`)
-        if (existingScript) {
-          resolve()
-          return
-        }
-
-        const script = document.createElement('script')
-        script.src = src
-        script.async = true
-        script.defer = true
-        script.onload = () => resolve()
-        script.onerror = () => reject(new Error(`Failed to load ${src}`))
-        parent.appendChild(script)
-      })
-
-    const initializeTripleseat = async () => {
-      try {
-        await loadScript('https://www.google.com/recaptcha/api.js')
-        if (cancelled) return
-
-        await loadScript(
-          'https://api.tripleseat.com/v1/leads/ts_script.js?lead_form_id=26805&public_key=90e0e457ced62ccf86f2f5d9a0deb7857a4676d9',
-          mountNode,
-        )
-        if (cancelled) return
-
-        moveTripleseatForm()
-        hideTripleseatLink()
-        setLoaded(true)
-      } catch {
-        if (!cancelled) setLoaded(true)
-      }
-    }
-
-    void initializeTripleseat()
+    mountNode.appendChild(frame)
 
     return () => {
-      cancelled = true
-      observer.disconnect()
-      bodyObserver.disconnect()
-      window.clearInterval(syncInterval)
       mountNode.innerHTML = ''
     }
   }, [])
