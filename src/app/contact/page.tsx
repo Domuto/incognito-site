@@ -50,6 +50,16 @@ export default function ContactPage() {
     })
     bodyObserver.observe(document.body, { childList: true, subtree: true })
 
+    const syncInterval = window.setInterval(() => {
+      moveTripleseatForm()
+      hideTripleseatLink()
+
+      const form = document.querySelector('#tripleseat_embed_form, #tripleseat_embed_form_inline')
+      if (form instanceof HTMLElement && mountNode.contains(form)) {
+        window.clearInterval(syncInterval)
+      }
+    }, 100)
+
     const loadScript = (src: string, parent: ParentNode = document.head) =>
       new Promise<void>((resolve, reject) => {
         const existingScript = document.querySelector(`script[src="${src}"]`)
@@ -92,6 +102,7 @@ export default function ContactPage() {
       cancelled = true
       observer.disconnect()
       bodyObserver.disconnect()
+      window.clearInterval(syncInterval)
       mountNode.innerHTML = ''
     }
   }, [])
