@@ -266,8 +266,13 @@ export default function PoolPage() {
           justify-content: center;
           gap: 12px;
           padding: 72px 16px 24px;
-          background: radial-gradient(circle at center, rgba(16, 70, 44, 0.35), transparent 55%),
-            url('/blue%20bg.JPEG') center/cover no-repeat;
+          background-color: #0f1a0f;
+          background-image:
+            radial-gradient(circle at center, rgba(16, 70, 44, 0.35), rgba(16, 70, 44, 0) 60%),
+            url('/360_F_166099507_4puS6NXaWOPugMfxcvkpVH4h8XwuhYXb.jpg');
+          background-size: cover, cover;
+          background-position: center center, center center;
+          background-repeat: no-repeat, no-repeat;
           overflow: auto;
         }
 

@@ -92,7 +92,11 @@ export default function MenuPage() {
         .page-shell {
           position: fixed;
           inset: 0;
-          background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 50%, #1a1a1a 100%);
+          background-color: #203f8f;
+          background-image: url('/blue%20bg.JPEG');
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size: cover;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -103,18 +107,6 @@ export default function MenuPage() {
           -webkit-user-select: none;
           user-select: none;
           -webkit-touch-callout: none;
-        }
-
-        .page-shell::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background-image: 
-            url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='6' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.15'/%3E%3C/svg%3E");
-          background-size: 200px 200px;
-          opacity: 0.8;
-          pointer-events: none;
-          z-index: 0;
         }
 
         .page-shell > * {
@@ -242,7 +234,7 @@ export default function MenuPage() {
         }
 
         .swipe-hint {
-          display: none;
+          display: block;
           font-family: 'Space Mono', monospace;
           font-size: 12px;
           color: rgba(245, 240, 232, 0.5);

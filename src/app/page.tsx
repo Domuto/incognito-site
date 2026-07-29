@@ -6,17 +6,10 @@ import Image from 'next/image'
 
 export default function Home() {
   const audioRef = useRef<HTMLAudioElement>(null)
-  const [stage, setStage] = useState(0) // 0: black, 1: warning, 2: logo, 3: full site
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [backgroundTexture, setBackgroundTexture] = useState(0)
+  const introVideoRef = useRef<HTMLVideoElement>(null)
+  const [showIntro, setShowIntro] = useState(true)
 
   useEffect(() => {
-    // Randomly select a background texture
-    setBackgroundTexture(Math.floor(Math.random() * 8))
-  }, [])
-
-  useEffect(() => {
-    // Start with black screen and ambient hum
     const audioElement = audioRef.current
     if (audioElement) {
       audioElement.volume = 0.3
@@ -25,93 +18,110 @@ export default function Home() {
       })
     }
 
-    // Stage 1: Show warning after 0.8s
-    const timer1 = setTimeout(() => {
-      setStage(1)
-    }, 800)
+    const introVideo = introVideoRef.current
+    if (introVideo) {
+      introVideo.play().catch(() => {
+        // If autoplay is blocked, the skip button still lets the user continue.
+      })
+    }
 
-    // Stage 2: Show logo after 2.5s total
-    const timer2 = setTimeout(() => {
-      setStage(2)
-    }, 2500)
-
-    // Stage 3: Show full site after 4.5s total
-    const timer3 = setTimeout(() => {
-      setStage(3)
-    }, 4500)
+    const fallbackTimer = setTimeout(() => {
+      setShowIntro(false)
+    }, 7000)
 
     return () => {
-      clearTimeout(timer1)
-      clearTimeout(timer2)
-      clearTimeout(timer3)
+      clearTimeout(fallbackTimer)
     }
   }, [])
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    setMousePosition({ x: e.clientX, y: e.clientY })
+  const completeIntro = () => {
+    const introVideo = introVideoRef.current
+    if (introVideo) {
+      introVideo.pause()
+      introVideo.currentTime = 0
+    }
+    setShowIntro(false)
   }
 
   return (
     <>
-      <div className="incognito-entrance" onMouseMove={handleMouseMove}>
-        {/* Ambient hum audio */}
+      <div className="incognito-entrance">
         <audio ref={audioRef} loop>
           <source src="/ambient-hum.mp3" type="audio/mpeg" />
         </audio>
 
-        {/* Grain texture overlay */}
         <div className="grain" aria-hidden="true" />
 
-        {/* Stage 0-1: Black screen with warning */}
-        {stage < 3 && (
-          <div className={`entry-phase entry-phase-${stage}`}>
-            {stage >= 1 && (
-              <div className="warning-text">
-                <p>You weren't supposed to find this.</p>
-              </div>
-            )}
+        {showIntro && (
+          <div className="intro-video-overlay">
+            <div className="intro-video-frame">
+              <video
+                ref={introVideoRef}
+                className="intro-video"
+                autoPlay
+                muted
+                playsInline
+                preload="auto"
+                onEnded={completeIntro}
+              >
+                <source src="/inc.mp4" type="video/mp4" />
+              </video>
+            </div>
+
+            <button type="button" className="intro-skip-btn" onClick={completeIntro}>
+              Skip Intro
+            </button>
           </div>
         )}
 
-        {/* Stage 2-3: Logo reveal */}
-        {stage >= 2 && (
-          <div className={`logo-reveal${stage >= 3 ? ' settled' : ''}`}>
-            <Image
-              src="/behind.PNG"
-              alt="INCÓGNITO"
-              width={400}
-              height={400}
-              className="logo-image"
-              priority
-            />
-          </div>
-        )}
-
-        {/* Stage 3: Full entrance with textured background */}
-        {stage >= 3 && (
+        {!showIntro && (
           <div className="entrance-full">
-            {/* Textured background */}
-            <div className={`textured-bg texture-${backgroundTexture}`}></div>
+            <div className="home-bg" aria-hidden="true" />
 
-            {/* Three floating options */}
+            <div className="home-table" aria-hidden="true">
+              <Image
+                src="/s1.png"
+                alt="Pool table"
+                width={760}
+                height={1298}
+                className="home-table-image"
+                priority
+              />
+            </div>
+
             <nav className="floating-options">
-              <Link href="/menu" className="option-portal">
+              <div className="top-logo">
                 <Image
-                  src="/menubutton.PNG"
-                  alt="THE FILES"
-                  width={200}
-                  height={200}
-                  className="option-image"
+                  src="/INCOG.png"
+                  alt="Incog"
+                  width={320}
+                  height={120}
+                  className="top-logo-image"
+                  priority
                 />
-              </Link>
-              <Link href="/about" className="option-portal">
-                <Image
-                  src="/aboutbuton.PNG"
-                  alt="THE ALIBI"
-                  width={200}
-                  height={200}
-                  className="option-image"
-                />
+              </div>
+              <div className="primary-options">
+                <Link href="/menu" className="option-portal">
+                  <Image
+                    src="/menubutton.PNG"
+                    alt="THE FILES"
+                    width={200}
+                    height={200}
+                    className="option-image"
+                  />
+                </Link>
+                <Link href="/about" className="option-portal">
+                  <Image
+                    src="/aboutbuton.PNG"
+                    alt="THE ALIBI"
+                    width={200}
+                    height={200}
+                    className="option-image"
+                  />
+                </Link>
+              </div>
+              <Link href="/pool" className="arcade-button">
+                Pool Table Game
               </Link>
             </nav>
           </div>
