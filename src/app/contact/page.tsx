@@ -1,70 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 
 export default function ContactPage() {
-  const tripleseatMountRef = useRef<HTMLDivElement>(null)
-  const [loaded, setLoaded] = useState(false)
-
-  useEffect(() => {
-    if (!tripleseatMountRef.current) return
-
-    const mountNode = tripleseatMountRef.current
-    mountNode.innerHTML = ''
-    let cancelled = false
-
-    const hideTripleseatLink = () => {
-      mountNode.querySelectorAll('#tripleseat_link').forEach((link) => {
-        link.remove()
-      })
-    }
-
-    const observer = new MutationObserver(hideTripleseatLink)
-    observer.observe(mountNode, { childList: true, subtree: true })
-
-    const loadScript = (src: string) =>
-      new Promise<void>((resolve, reject) => {
-        const existingScript = document.querySelector(`script[src="${src}"]`)
-        if (existingScript) {
-          resolve()
-          return
-        }
-
-        const script = document.createElement('script')
-        script.src = src
-        script.async = true
-        script.defer = true
-        script.onload = () => resolve()
-        script.onerror = () => reject(new Error(`Failed to load ${src}`))
-        document.head.appendChild(script)
-      })
-
-    const initializeTripleseat = async () => {
-      try {
-        await loadScript('https://www.google.com/recaptcha/api.js')
-        if (cancelled) return
-
-        await loadScript(
-          'https://api.tripleseat.com/v1/leads/ts_script.js?lead_form_id=26805&public_key=90e0e457ced62ccf86f2f5d9a0deb7857a4676d9',
-        )
-        if (cancelled) return
-
-        hideTripleseatLink()
-        setLoaded(true)
-      } catch {
-        if (!cancelled) setLoaded(true)
-      }
-    }
-
-    void initializeTripleseat()
-
-    return () => {
-      cancelled = true
-      observer.disconnect()
-      mountNode.innerHTML = ''
-    }
-  }, [])
+  const [iframeLoaded, setIframeLoaded] = useState(false)
 
   return (
     <>
@@ -442,6 +382,22 @@ export default function ContactPage() {
           padding: 8px 0 2px;
         }
 
+        .tripleseat-frame {
+          width: 100%;
+          min-height: 680px;
+          border: none;
+          background: transparent;
+          display: block;
+          transition: opacity 0.3s ease;
+        }
+
+        .tripleseat-frame.hidden {
+          opacity: 0;
+          height: 0;
+          min-height: 0;
+          overflow: hidden;
+        }
+
         @media (max-width: 520px) {
           .contact-card #tripleseat_embed_form input,
           .contact-card #tripleseat_embed_form select,
@@ -478,8 +434,14 @@ export default function ContactPage() {
             For any Private Events, buyouts and exclusive experiences
           </p>
 
-          {!loaded && <p className="tripleseat-loading">Loading contact form...</p>}
-          <div ref={tripleseatMountRef} />
+          {!iframeLoaded && <p className="tripleseat-loading">Loading contact form...</p>}
+          <iframe
+            className={`tripleseat-frame${iframeLoaded ? '' : ' hidden'}`}
+            src="https://botanicohospitality.tripleseat.com/party_request/26805"
+            title="Event Request Form"
+            onLoad={() => setIframeLoaded(true)}
+            allow="clipboard-write"
+          />
         </section>
       </main>
     </>

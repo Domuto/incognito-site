@@ -7,33 +7,95 @@ export const viewport: Viewport = {
   viewportFit: 'cover',
 }
 
+const SITE_URL = 'https://www.incognito404.com'
+
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : 'http://localhost:3000'
-  ),
-  title: 'Incognito',
-  description: "You weren't supposed to find this.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: 'Incognito | Hidden Cocktail Bar & Speakeasy in Atlanta',
+    template: '%s | Incognito Atlanta',
+  },
+  description:
+    "Incognito is a hidden speakeasy and craft cocktail bar in Atlanta — secret entrance, seasonal cocktails, and an intimate after-dark atmosphere. You weren't supposed to find this.",
+  applicationName: 'Incognito',
+  keywords: [
+    'Incognito',
+    'Incognito Atlanta',
+    'Incognito ATL',
+    'speakeasy Atlanta',
+    'hidden bar Atlanta',
+    'secret bar Atlanta',
+    'cocktail bar Atlanta',
+    'craft cocktails Atlanta',
+    'private bar Atlanta',
+    'Atlanta nightlife',
+    'Atlanta lounge',
+    'Botanico Hospitality',
+  ],
+  authors: [{ name: 'Incognito' }],
+  creator: 'Incognito',
+  publisher: 'Incognito',
+  category: 'Bar',
+  alternates: {
+    canonical: '/',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
+  },
   openGraph: {
-    title: 'Incognito',
-    description: "You weren't supposed to find this.",
+    title: 'Incognito | Hidden Cocktail Bar & Speakeasy in Atlanta',
+    description:
+      "A hidden speakeasy and craft cocktail bar in Atlanta. You weren't supposed to find this.",
+    url: SITE_URL,
+    siteName: 'Incognito',
+    locale: 'en_US',
     images: [
       {
         url: '/logo.png',
         width: 1200,
         height: 630,
-        alt: 'Incognito',
+        alt: 'Incognito — Hidden Cocktail Bar & Speakeasy in Atlanta',
       },
     ],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Incognito',
-    description: "You weren't supposed to find this.",
+    title: 'Incognito | Hidden Cocktail Bar & Speakeasy in Atlanta',
+    description:
+      "A hidden speakeasy and craft cocktail bar in Atlanta. You weren't supposed to find this.",
     images: ['/logo.png'],
   },
+}
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'BarOrPub',
+  '@id': `${SITE_URL}/#incognito`,
+  name: 'Incognito',
+  alternateName: 'Incognito ATL',
+  description:
+    'Hidden speakeasy and craft cocktail bar in Atlanta with a secret entrance, seasonal cocktails, and an intimate after-dark atmosphere.',
+  url: SITE_URL,
+  image: `${SITE_URL}/logo.png`,
+  logo: `${SITE_URL}/logo.png`,
+  servesCuisine: 'Cocktails',
+  priceRange: '$$',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Atlanta',
+    addressRegion: 'GA',
+    addressCountry: 'US',
+  },
+  sameAs: ['https://www.instagram.com/bar_incognitoatl/'],
 }
 
 export default function RootLayout({
@@ -43,7 +105,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+        {children}
+      </body>
     </html>
   )
 }
