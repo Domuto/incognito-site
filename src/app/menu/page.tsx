@@ -15,7 +15,7 @@ export default function MenuPage() {
   const [isFlipping, setIsFlipping] = useState(false)
   const touchStartX = useRef(0)
   const touchStartTime = useRef(0)
-  const totalPages = 14
+  const totalPages = 18
   const getLocalPageImageUrl = (pageNumber: number) =>
     `/incog_page-${String(pageNumber).padStart(2, '0')}.webp`
   const getPageImageUrl = (pageNumber: number, useLocal = false) => {
@@ -714,7 +714,7 @@ export default function MenuPage() {
           <div className="mobile-swipe-hint">
             {isCoverView ? 'Swipe left to open the menu' : 'Swipe left or right to turn spreads'}
           </div>
-          <a href="/INCOG MENU.pdf" target="_blank" rel="noopener noreferrer" className="pdf-btn">
+          <a href="/INCOG MENUvv.pdf" target="_blank" rel="noopener noreferrer" className="pdf-btn">
             📄 VIEW MENU PDF
           </a>
         </div>
